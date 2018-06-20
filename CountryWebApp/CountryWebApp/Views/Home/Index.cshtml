@@ -4,17 +4,11 @@
 
 
 
-@using (Html.BeginForm("sendGet", "Home"))
+@using (Html.BeginForm("Index", "Home"))
 {
     <input type="submit" value="Get" />
-    
-    /*
-    @if (Model == null)
-    {
-        <h1>Access token = null</h1>
-    }
-    else
-    {
-        <h1>Access token is </h1>
-    }*/
+   
+        //var ls = (List<string>)TempData["id"];
+        <h2>@TempData["id"]</h2>
+   
 }

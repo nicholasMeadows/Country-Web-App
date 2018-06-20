@@ -11,97 +11,60 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Web;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Session;
 
 namespace CountryWebApp.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index([FromQuery] string code)
-        {/*
-            DataModel data = new DataModel();
-            if (code == null)
-            {
-                return View(data);
-            }
-
-            string access_tokenString = GetAccessToken(code).Result;
-
-            AccessTokenModel accessToken = JsonConvert.DeserializeObject<AccessTokenModel>(access_tokenString);
-
-            TempData["accessToken"] = accessToken.access_token;
-
-            TempData.Keep();
-            return View();*/
-
-            //TempData["test"] = "asdf";
-            //TempData.Keep();
-            HttpContext.Session.SetString("","");
-            return View();
-        }
-
-        public IActionResult sendGet()
+        public IActionResult Index()
         {
-            string data = (string)TempData.Peek("test");
+            string access_tokenString = HttpContext.Session.GetString("access_token");
             
-
-            return Redirect("http://www.google.com/" + (string)TempData.Peek("test") );
-            /*
-            if (data == null)
+           
+            if (access_tokenString == null)
             {
-                return Redirect("https://localhost:44311/authorize?client_id=6bf53df0b48d4937a0f94626c7c31fc6&response_type=code&redirect_uri=http://localhost:54551");
-            }
-            return Ok("asdf");
-            /*
-            if (data.access_token == null)
-            {
-                return Redirect("https://localhost:44311/authorize?client_id=6bf53df0b48d4937a0f94626c7c31fc6&response_type=code&redirect_uri=http://localhost:54551");
+                return Redirect("https://localhost:44311/authorize?client_id=6bf53df0b48d4937a0f94626c7c31fc6&response_type=code&redirect_uri=http://localhost:54551/Home/Return");
             }
             else
-            {/*
-                using (WebClient wc = new WebClient())
-                {
-                    wc.Headers.Add("Authorization", "Bearer " + data.access_token);
-                    string response = wc.DownloadString("http://localhost:53676/api/values");
-
-                    //errorModel err = JsonConvert.DeserializeObject<errorModel>(response);
-
-                    return Ok(response);    
-                }
-
-                return Ok("Ok test");
-                */
-        }
-        /*
-       // AccessTokenModel accessToken = (AccessTokenModel)TempData["access"];
-
-       // return Redirect("/sdf=" + TempData["access"]);
-        if (data.accessToken == null)
-        {
-            /*
-            using (WebClient wc = new WebClient())
             {
-                // wc.Headers.Add("Authorization", "Bearer "+accessToken.access_token);
-                string response = wc.DownloadString("http://localhost:53676/api/values");
+                //make get request to CountryApi    
+                string result = MakeApiCall(access_tokenString).Result;
+                if (result.Contains("Expired acces token"))
+                {
+                    AccessTokenModel access_token = JsonConvert.DeserializeObject<AccessTokenModel>(HttpContext.Session.GetString("access_token"));
+                    AccessTokenModel newAccessToken = JsonConvert.DeserializeObject<AccessTokenModel>( UseRefreshToken(access_token.refresh_token).Result);
+                    newAccessToken.refresh_token = access_token.refresh_token;
 
-                errorModel err = JsonConvert.DeserializeObject<errorModel>(response);
+                    string newAccessTokenString = JsonConvert.SerializeObject(newAccessToken);
+                    HttpContext.Session.Clear();
+                    HttpContext.Session.SetString("access_token", newAccessTokenString);
 
-                if (err.error.message.Equals("Missing access_token"))
-                    {*/
-
-        //This redirect goes to the login page for the OAuth 2 server and returns the the index with the request token
-        //      return Redirect("https://localhost:44311/authorize?client_id=6bf53df0b48d4937a0f94626c7c31fc6&response_type=code&redirect_uri=http://localhost:54551");
-        /*   }
-       else {
-           return Redirect("asdf");
-       }
-   }*/
-
-        /*
+                    result = MakeApiCall(newAccessTokenString).Result;
+                    //return Ok(newAccessToken);
+                }
+                return Ok(result);
+            }
         }
-        else {
-            return Ok();
-        }           */
 
+        public IActionResult Return([FromQuery] string code) {
+            string access_tokenString = GetAccessToken(code).Result;
+            HttpContext.Session.SetString("access_token",access_tokenString);
+            return RedirectToAction("Index");
+        }
+
+        static async Task<string> MakeApiCall(string access_tokenString)
+        {
+            AccessTokenModel access_token = JsonConvert.DeserializeObject<AccessTokenModel>(access_tokenString);
+            var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + access_token.access_token);
+
+            var response = await httpClient.GetAsync("http://localhost:53676/api/values");
+            string contents = await response.Content.ReadAsStringAsync();
+
+
+            return contents;
+        }
 
         static async Task<string> GetAccessToken(string code)
         {
@@ -109,10 +72,10 @@ namespace CountryWebApp.Controllers
             httpClient.DefaultRequestHeaders.Add("Authorization", "Basic NmJmNTNkZjBiNDhkNDkzN2EwZjk0NjI2YzdjMzFmYzY6NDdkOWYzNGI4MjA0NGU3ZDliYWM1MGIwZjI3OTAzMDE=");
 
             var parameters = new Dictionary<string, string>();
-            //parameters["text"] = text;
+            
             parameters.Add("grant_type", "authorization_code");
             parameters.Add("code", code);
-            parameters.Add("redirect_uri", "http://localhost:54551");
+            parameters.Add("redirect_uri", "http://localhost:54551/Home/Return");
 
             var response = await httpClient.PostAsync("https://localhost:44311/api/token", new FormUrlEncodedContent(parameters));
             string contents = await response.Content.ReadAsStringAsync();
@@ -121,8 +84,40 @@ namespace CountryWebApp.Controllers
             return contents;
         }
 
+        static async Task<string> UseRefreshToken(string refresh_token)
+        {
+            
+            var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("Authorization", "Basic NmJmNTNkZjBiNDhkNDkzN2EwZjk0NjI2YzdjMzFmYzY6NDdkOWYzNGI4MjA0NGU3ZDliYWM1MGIwZjI3OTAzMDE=");
+
+            var parameters = new Dictionary<string, string>();
+            //parameters["text"] = text;
+            parameters.Add("grant_type", "refresh_token");
+            parameters.Add("refresh_token", refresh_token);
+            
+
+            var response = await httpClient.PostAsync("https://localhost:44311/api/token", new FormUrlEncodedContent(parameters));
+            string contents = await response.Content.ReadAsStringAsync();
+
+
+            return contents;
+        }
 
     }
+    
+    public static class SessionExtensions
+    {
+        public static void Set<T>(this ISession session, string key, T value)
+        {
+            session.SetString(key, JsonConvert.SerializeObject(value));
+        }
+
+        public static T Get<T>(this ISession session, string key)
+        {
+            var value = session.GetString(key);
+            return value == null ? default(T) :
+                                  JsonConvert.DeserializeObject<T>(value);
+        }
+    }
 }
-
-
+  
