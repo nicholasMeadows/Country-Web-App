@@ -11512,11 +11512,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\nicholas.meadows\\Documents\\GitHub\\Country-Web-App\\CountryWebApp\\CountryWebApp\\CountryWebApp.csproj",
+      "projectUniqueName": "C:\\GitHub\\Country-Web-App\\CountryWebApp\\CountryWebApp\\CountryWebApp.csproj",
       "projectName": "CountryWebApp",
-      "projectPath": "C:\\Users\\nicholas.meadows\\Documents\\GitHub\\Country-Web-App\\CountryWebApp\\CountryWebApp\\CountryWebApp.csproj",
+      "projectPath": "C:\\GitHub\\Country-Web-App\\CountryWebApp\\CountryWebApp\\CountryWebApp.csproj",
       "packagesPath": "C:\\Users\\nicholas.meadows\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\nicholas.meadows\\Documents\\GitHub\\Country-Web-App\\CountryWebApp\\CountryWebApp\\obj\\",
+      "outputPath": "C:\\GitHub\\Country-Web-App\\CountryWebApp\\CountryWebApp\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
