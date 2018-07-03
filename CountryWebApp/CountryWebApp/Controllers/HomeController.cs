@@ -54,9 +54,9 @@ namespace CountryWebApp.Controllers
         public IActionResult Return([FromQuery] string code) {
             
             string access_tokenString = GetAccessToken(code).Result;
-            HttpContext.Session.SetString("access_token",access_tokenString);
-            return RedirectToAction("Index");
-            //return Ok("Testing Endpoint");
+           // HttpContext.Session.SetString("access_token",access_tokenString);
+           // return RedirectToAction("Index");
+            return Ok(access_tokenString);
         }
 
         static async Task<string> MakeApiCall(string access_tokenString)
