@@ -76,7 +76,7 @@ namespace CountryWebApp.Controllers
             
             parameters.Add("grant_type", "authorization_code");
             parameters.Add("code", code);
-            parameters.Add("redirect_uri", "http://localhost:54551/Home/Return");
+            parameters.Add("redirect_uri", "http://localhost:8000/Home/Return");
 
             var response = await httpClient.PostAsync("https://localhost:44311/api/token", new FormUrlEncodedContent(parameters));
             string contents = await response.Content.ReadAsStringAsync();
