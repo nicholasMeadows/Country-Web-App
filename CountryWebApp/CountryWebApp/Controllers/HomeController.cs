@@ -17,8 +17,11 @@ namespace CountryWebApp.Controllers
 {
     public class HomeController : Controller
     {
+        
         public IActionResult Index()
         {
+            return Ok("Testing Index");
+            /*
             string access_tokenString = HttpContext.Session.GetString("access_token");
             
            
@@ -44,10 +47,10 @@ namespace CountryWebApp.Controllers
                     //return Ok(newAccessToken);
                 }
                 return Ok(result);
-            }
+            }*/
         }
 
-        [Route("/Home/Return")]
+        
         public IActionResult Return([FromQuery] string code) {
             /*
             string access_tokenString = GetAccessToken(code).Result;
