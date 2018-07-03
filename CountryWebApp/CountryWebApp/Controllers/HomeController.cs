@@ -24,7 +24,7 @@ namespace CountryWebApp.Controllers
            
             if (access_tokenString == null)
             {
-                return Redirect("https://localhost:44311/authorize?client_id=6bf53df0b48d4937a0f94626c7c31fc6&response_type=code&redirect_uri=http://localhost:54551/Home/Return");
+                return Redirect("https://localhost:44311/authorize?client_id=6bf53df0b48d4937a0f94626c7c31fc6&response_type=code&redirect_uri=http://localhost:8000/Home/Return");
             }
             else
             {
