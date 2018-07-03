@@ -20,8 +20,8 @@ namespace CountryWebApp.Controllers
         
         public IActionResult Index()
         {
-            return Ok("Testing Index");
-            /*
+            //return Ok("Testing Index");
+            
             string access_tokenString = HttpContext.Session.GetString("access_token");
             
            
@@ -47,16 +47,16 @@ namespace CountryWebApp.Controllers
                     //return Ok(newAccessToken);
                 }
                 return Ok(result);
-            }*/
+            }
         }
 
         
         public IActionResult Return([FromQuery] string code) {
-            /*
+            
             string access_tokenString = GetAccessToken(code).Result;
             HttpContext.Session.SetString("access_token",access_tokenString);
-            return RedirectToAction("Index");*/
-            return Ok("Testing Endpoint");
+            return RedirectToAction("Index");
+            //return Ok("Testing Endpoint");
         }
 
         static async Task<string> MakeApiCall(string access_tokenString)
