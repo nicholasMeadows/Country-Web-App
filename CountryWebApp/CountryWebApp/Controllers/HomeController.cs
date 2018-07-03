@@ -74,20 +74,26 @@ namespace CountryWebApp.Controllers
 
         static async Task<string> GetAccessToken(string code)
         {
-            var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Add("Authorization", "Basic NmJmNTNkZjBiNDhkNDkzN2EwZjk0NjI2YzdjMzFmYzY6NDdkOWYzNGI4MjA0NGU3ZDliYWM1MGIwZjI3OTAzMDE=");
+            try
+            {
+                var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Add("Authorization", "Basic NmJmNTNkZjBiNDhkNDkzN2EwZjk0NjI2YzdjMzFmYzY6NDdkOWYzNGI4MjA0NGU3ZDliYWM1MGIwZjI3OTAzMDE=");
 
-            var parameters = new Dictionary<string, string>();
-            
-            parameters.Add("grant_type", "authorization_code");
-            parameters.Add("code", code);
-            parameters.Add("redirect_uri", "http://localhost:8000/Home/Return");
+                var parameters = new Dictionary<string, string>();
 
-            var response = await httpClient.PostAsync("https://localhost:44311/api/token", new FormUrlEncodedContent(parameters));
-            string contents = await response.Content.ReadAsStringAsync();
+                parameters.Add("grant_type", "authorization_code");
+                parameters.Add("code", code);
+                parameters.Add("redirect_uri", "http://localhost:8000/Home/Return");
+
+                var response = await httpClient.PostAsync("https://localhost:44311/api/token", new FormUrlEncodedContent(parameters));
+                string contents = await response.Content.ReadAsStringAsync();
 
 
-            return contents;
+                return contents;
+            }
+            catch (Exception e) {
+                return e.StackTrace;
+            }
         }
 
         static async Task<string> UseRefreshToken(string refresh_token)
