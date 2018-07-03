@@ -92,7 +92,7 @@ namespace CountryWebApp.Controllers
                 return contents;
             }
             catch (Exception e) {
-                return e.StackTrace;
+                return e.ToString();
             }
         }
 
