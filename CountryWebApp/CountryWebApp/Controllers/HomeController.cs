@@ -31,6 +31,7 @@ namespace CountryWebApp.Controllers
             }
             else
             {
+                return Ok("SUCCESS");
                 //make get request to CountryApi    
                 string result = MakeApiCall(access_tokenString).Result;
                 if (result.Contains("Expired acces token"))
