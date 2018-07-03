@@ -47,6 +47,7 @@ namespace CountryWebApp.Controllers
             }
         }
 
+        [Route("/Home/Return")]
         public IActionResult Return([FromQuery] string code) {
             string access_tokenString = GetAccessToken(code).Result;
             HttpContext.Session.SetString("access_token",access_tokenString);
