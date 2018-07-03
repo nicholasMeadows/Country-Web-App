@@ -52,11 +52,11 @@ namespace CountryWebApp.Controllers
 
         
         public IActionResult Return([FromQuery] string code) {
-            
+           
             string access_tokenString = GetAccessToken(code).Result;
-           // HttpContext.Session.SetString("access_token",access_tokenString);
-           // return RedirectToAction("Index");
-            return Ok(access_tokenString);
+            HttpContext.Session.SetString("access_token",access_tokenString);
+            return RedirectToAction("Index");
+            //return Ok(access_tokenString);
         }
 
         static async Task<string> MakeApiCall(string access_tokenString)
@@ -85,7 +85,7 @@ namespace CountryWebApp.Controllers
                 parameters.Add("code", code);
                 parameters.Add("redirect_uri", "http://localhost:8000/Home/Return");
 
-                var response = await httpClient.PostAsync("http://localhost:50122/api/token", new FormUrlEncodedContent(parameters));
+                var response = await httpClient.PostAsync("https://localhost:44319/api/token", new FormUrlEncodedContent(parameters));
                 string contents = await response.Content.ReadAsStringAsync();
 
 
