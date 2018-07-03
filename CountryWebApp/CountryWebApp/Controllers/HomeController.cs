@@ -66,6 +66,7 @@ namespace CountryWebApp.Controllers
         {
             try
             {
+                return access_tokenString;
                 AccessTokenModel access_token = JsonConvert.DeserializeObject<AccessTokenModel>(access_tokenString);
                 var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + access_token.access_token);
