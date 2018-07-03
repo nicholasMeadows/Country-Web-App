@@ -64,15 +64,19 @@ namespace CountryWebApp.Controllers
 
         static async Task<string> MakeApiCall(string access_tokenString)
         {
-            AccessTokenModel access_token = JsonConvert.DeserializeObject<AccessTokenModel>(access_tokenString);
-            var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + access_token.access_token);
+            try
+            {
+                AccessTokenModel access_token = JsonConvert.DeserializeObject<AccessTokenModel>(access_tokenString);
+                var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + access_token.access_token);
 
-            var response = await httpClient.GetAsync("http://localhost:53676/api/values");
-            string contents = await response.Content.ReadAsStringAsync();
+                var response = await httpClient.GetAsync("http://localhost:53676/api/values");
+                string contents = await response.Content.ReadAsStringAsync();
 
 
-            return contents;
+                return contents;
+            }
+            catch (Exception e){ return e.ToString(); }
         }
 
         static async Task<string> GetAccessToken(string code)
