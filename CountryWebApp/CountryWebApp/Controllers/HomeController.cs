@@ -34,6 +34,8 @@ namespace CountryWebApp.Controllers
                 
                 //make get request to CountryApi    
                 string result = MakeApiCall(access_tokenString).Result;
+
+                return Ok(result);
                 if (result.Contains("Expired acces token"))
                 {
                     AccessTokenModel access_token = JsonConvert.DeserializeObject<AccessTokenModel>(HttpContext.Session.GetString("access_token"));
